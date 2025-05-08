@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="tr" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" integrity="sha384-dpuaG1suU0eT09tx5plTaGMLBsfDLzUCCUXOY2j/LSvXYuG6Bqs43ALlhIqAJVRb" crossorigin="anonymous">
+    <title>MOVISION+</title>
+    <link rel="stylesheet" href="blogsitesi.css">
+    <link rel="stylesheet" href="custom-colors.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        ::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        :-ms-input-placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+        ::-ms-input-placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        /* Dropdown Menü Stilleri */
+        .dropdown-menu {
+            border: 1px solid #bc7ede;
+            padding: 0.5rem 0;
+        }
+
+        .dropdown-item {
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #bc7ede;
+            color: white !important;
+        }
+
+        .dropdown-divider {
+            margin: 0.5rem 0;
+        }
+
+        .avatar {
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-toggle:hover .avatar {
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Üst menü kısmı -->
+    <nav class="navbar navbar-expand-lg bg-dark text-white fixed-top">
+        <div class="container-fluid">
+            <div class="d-flex align-items-center">
+                <a class="navbar-brand me-3" href="blogsitesi.html">MOVISION<span style="color: #bc7ede; font-weight: bold; font-size: 1.2em;">+</span></a>
+                <div class="d-flex">
+                    <div class="dropdown me-2">
+                        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Filmler
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="yeni-filmler.html">Yeni Çıkan</a></li>
+                            <li><a class="dropdown-item" href="populer-filmler.html">En Çok Oy Alan</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="dropdown me-2">
+                        <button class="btn btn-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Diziler
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="yeni-diziler.html">Vizyona Girecek</a></li>
+                            <li><a class="dropdown-item" href="populer-diziler.html">En Çok Oy Alan</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sola dinamik yaslanmış giriş/kayıt butonları -->
+            <div class="d-flex align-items-center me-auto">
+                <div id="authButtons"></div>
+            </div>
+        </div>
+    </nav>    
+
+    <!-- Arama Formu -->
+    <form action="movie-details.html" method="GET" class="d-flex search-form">
+        <input class="form-control search-input" type="search" name="query" placeholder="Ara..." aria-label="Search">
+        <button class="btn search-btn" type="submit">
+            <i class="fas fa-search"></i>
+        </button>
+    </form>
+
+    <!-- Trend Filmler -->
+    <div class="container-fluid mt-5 pt-5">
+        <h1 class="text-white ms-4">Trend Filmler</h1>
+        <div class="scroll-container">
+            <div class="scroll-content" id="movie-list">
+                <!-- Filmler Dinamik Olarak Buraya Eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Trend Diziler -->
+    <div class="container-fluid mt-5 pt-5">
+        <h1 class="text-white ms-4">Trend Diziler</h1>
+        <div class="scroll-container">
+            <div class="scroll-content" id="tv-show-list">
+                <!-- Diziler Dinamik Olarak Buraya Eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Yakında Gelecek Filmler -->
+    <div class="container-fluid mt-5 pt-5">
+        <h1 class="text-white ms-4">Yakında Gelecek Filmler</h1>
+        <div class="scroll-container">
+            <div class="scroll-content" id="upcoming-movie-list">
+                <!-- Yakında Gelecek Filmler Dinamik Olarak Buraya Eklenecek -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Kayıt ve Giriş Formları -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="registerModalLabel">Kayıt Ol</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="mb-3">
+                            <label for="registerName" class="form-label">Ad Soyad</label>
+                            <input type="text" class="form-control" id="registerName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="registerEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="registerPassword" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="registerPassword" required>
+                        </div>
+                        <button type="submit" class="btn" style="background-color: #bc7ede; color: white;">Kayıt Ol</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Giriş Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="loginModalLabel">Giriş Yap</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="loginEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="loginPassword" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="loginPassword" required>
+                        </div>
+                        <button type="submit" class="btn" style="background-color: #bc7ede; color: white;">Giriş Yap</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="movieModalLabel">Film Detayları</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img id="movie-poster" src="" alt="Film Afişi" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-8">
+                            <h3 id="movie-title"></h3>
+                            <p id="movie-overview"></p>
+                            <p><strong>Puan:</strong> <span id="movie-rating"></span></p>
+                            
+                            <div class="like-section mb-3">
+                                <button class="btn" id="like-button" style="background-color: #474c52; color: #bc7ede; border-color: #bc7ede;">
+                                    <i class="far fa-heart"></i> Beğen
+                                </button>
+                                <span id="like-count" class="ms-2" style="color: #bc7ede;">0 beğeni</span>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h4>Yorumlar</h4>
+                                <div id="comments-section" class="mb-3">
+                                    <!-- Yorumlar buraya eklenecek -->
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control bg-dark text-white mb-2" id="comment-nickname" placeholder="Kullanıcı adınızı giriniz...">
+                                    <textarea class="form-control bg-dark text-white mb-2" id="comment-input" rows="3" placeholder="Filminiz hakkında ne düşünüyorsunuz? Yorumunuzu yazın..."></textarea>
+                                    <button class="btn" style="background-color: #474c52; color: #bc7ede; border-color: #bc7ede;" id="add-comment">
+                                        Yorum Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Diziler Modal -->
+    <div class="modal fade" id="tvModal" tabindex="-1" aria-labelledby="tvModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="tvModalLabel">Dizi Detayları</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img id="tv-poster" src="" alt="Dizi Afişi" class="img-fluid rounded">
+                        </div>
+                        <div class="col-md-8">
+                            <h3 id="tv-title"></h3>
+                            <p id="tv-overview"></p>
+                            <p><strong>Puan:</strong> <span id="tv-rating"></span></p>
+                            
+                            <div class="like-section mb-3">
+                                <button class="btn" id="tv-like-button" style="background-color: #474c52; color: #bc7ede; border-color: #bc7ede;">
+                                    <i class="far fa-heart"></i> Beğen
+                                </button>
+                                <span id="tv-like-count" class="ms-2" style="color: #bc7ede;">0 beğeni</span>
+                            </div>
+                            
+                            <div class="mt-4">
+                                <h4>Yorumlar</h4>
+                                <div id="tv-comments-section" class="mb-3">
+                                    <!-- Yorumlar buraya eklenecek -->
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control bg-dark text-white mb-2" id="tv-comment-nickname" placeholder="Kullanıcı adınızı giriniz...">
+                                    <textarea class="form-control bg-dark text-white mb-2" id="tv-comment-input" rows="3" placeholder="Diziniz hakkında ne düşünüyorsunuz? Yorumunuzu yazın..."></textarea>
+                                    <button class="btn" style="background-color: #474c52; color: #bc7ede; border-color: #bc7ede;" id="tv-add-comment">
+                                        Yorum Ekle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ayarlar Modal -->
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="settingsModalLabel">Ayarlar</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="settingsForm">
+                        <div class="mb-3">
+                            <label for="settingsName" class="form-label">Kullanıcı Adı</label>
+                            <input type="text" class="form-control bg-dark text-white" id="settingsName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="settingsEmail" class="form-label">E-posta</label>
+                            <input type="email" class="form-control bg-dark text-white" id="settingsEmail" required>
+                        </div>
+                        <hr class="bg-secondary">
+                        <h6 class="mb-3">Şifre Değiştir</h6>
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Mevcut Şifre</label>
+                            <input type="password" class="form-control bg-dark text-white" id="currentPassword">
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">Yeni Şifre</label>
+                            <input type="password" class="form-control bg-dark text-white" id="newPassword">
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Yeni Şifre (Tekrar)</label>
+                            <input type="password" class="form-control bg-dark text-white" id="confirmPassword">
+                        </div>
+                        <button type="submit" class="btn" style="background-color: #bc7ede; color: white;">Değişiklikleri Kaydet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profilim Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title" id="profileModalLabel">Profilim</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-4">
+                        <div class="col-md-2">
+                            <div id="profile-avatar" class="avatar" style="width: 100px; height: 100px; background-color: #bc7ede; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 2em;"></div>
+                        </div>
+                        <div class="col-md-10">
+                            <h3 id="profile-username"></h3>
+                            <p id="profile-email" class="text-muted"></p>
+                        </div>
+                    </div>
+                    <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="likes-tab" data-bs-toggle="tab" data-bs-target="#likes" type="button" role="tab">Beğendiklerim</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="comments-tab" data-bs-toggle="tab" data-bs-target="#comments" type="button" role="tab">Yorumlarım</button>
+                        </li>
+                    </ul>
+                    <div class="tab-content mt-3" id="profileTabsContent">
+                        <div class="tab-pane fade show active" id="likes" role="tabpanel">
+                            <div class="row" id="likedContent">
+                                <!-- Beğenilen içerikler buraya gelecek -->
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="comments" role="tabpanel">
+                            <div id="userComments">
+                                <!-- Kullanıcının yorumları buraya gelecek -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Javascript Kodları -->
+    <script>
+        // API Anahtarı
+        const API_KEY = '8c247ea0b4b56ed2ff7d41c9a833aa77';
+        const BASE_URL = 'https://api.themoviedb.org/3';
+        const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+
+        // Trend Filmleri Getir
+        async function getTrendingMovies() {
+            try {
+                const response = await fetch(`${BASE_URL}/trending/movie/week?api_key=${API_KEY}&language=tr-TR`);
+                const data = await response.json();
+                displayMovies(data.results, 'movie-list');
+            } catch (error) {
+                console.error('Filmler yüklenirken hata oluştu:', error);
+            }
+        }
+
+        // Trend Dizileri Getir
+        async function getTrendingTVShows() {
+            try {
+                const response = await fetch(`${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=tr-TR`);
+                const data = await response.json();
+                displayTVShows(data.results, 'tv-show-list');
+            } catch (error) {
+                console.error('Diziler yüklenirken hata oluştu:', error);
+            }
+        }
+
+        // Yakında Gelecek Filmleri Getir
+        async function getUpcomingMovies() {
+            try {
+                const response = await fetch(`${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=tr-TR`);
+                const data = await response.json();
+                displayMovies(data.results, 'upcoming-movie-list');
+            } catch (error) {
+                console.error('Yakında gelecek filmler yüklenirken hata oluştu:', error);
+            }
+        }
+
+        // Filmleri Görüntüle
+        function displayMovies(movies, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            movies.forEach(movie => {
+                const movieCard = `
+                    <div class="movie-card" onclick="showMovieDetails(${movie.id})">
+                        <img src="${IMAGE_BASE_URL}${movie.poster_path}" alt="${movie.title}" class="movie-poster">
+                        <div class="movie-info">
+                            <h3>${movie.title}</h3>
+                            <p class="rating">⭐ ${movie.vote_average.toFixed(1)}</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += movieCard;
+            });
+        }
+
+        // Dizileri Görüntüle
+        function displayTVShows(shows, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            shows.forEach(show => {
+                const showCard = `
+                    <div class="movie-card" onclick="showTVDetails(${show.id})">
+                        <img src="${IMAGE_BASE_URL}${show.poster_path}" alt="${show.name}" class="movie-poster">
+                        <div class="movie-info">
+                            <h3>${show.name}</h3>
+                            <p class="rating">⭐ ${show.vote_average.toFixed(1)}</p>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += showCard;
+            });
+        }
+
+        // Beğeni ve Yorum İşlemleri
+        let likedMovies = JSON.parse(localStorage.getItem('likedMovies')) || {};
+        let comments = JSON.parse(localStorage.getItem('movieComments')) || {};
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+
+        // Beğeni Durumunu Güncelle
+        function updateLikeStatus(movieId) {
+            if (!currentUser) {
+                alert('Beğeni yapabilmek için lütfen giriş yapın!');
+                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+                return;
+            }
+
+            const likeBtn = document.getElementById('like-button');
+            const likeCount = document.getElementById('like-count');
+            
+            if (likedMovies[movieId]) {
+                likedMovies[movieId] = false;
+                likeBtn.classList.remove('text-danger');
+                likeBtn.classList.add('text-white');
+                likeCount.textContent = parseInt(likeCount.textContent) - 1;
+            } else {
+                likedMovies[movieId] = true;
+                likeBtn.classList.remove('text-white');
+                likeBtn.classList.add('text-danger');
+                likeCount.textContent = parseInt(likeCount.textContent) + 1;
+            }
+            
+            localStorage.setItem('likedMovies', JSON.stringify(likedMovies));
+        }
+
+        // Yorum Ekle
+        function addComment(movieId) {
+            if (!currentUser) {
+                alert('Yorum yapabilmek için lütfen giriş yapın!');
+                const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+                return;
+            }
+
+            const commentInput = document.getElementById('comment-input');
+            const commentText = commentInput.value.trim();
+            
+            if (commentText) {
+                if (!comments[movieId]) {
+                    comments[movieId] = [];
+                }
+                
+                const newComment = {
+                    text: commentText,
+                    date: new Date().toLocaleString('tr-TR'),
+                    user: currentUser.name
+                };
+                
+                comments[movieId].push(newComment);
+                localStorage.setItem('movieComments', JSON.stringify(comments));
+                
+                // Yorumları güncelle
+                displayComments(movieId);
+                
+                // Input'u temizle
+                commentInput.value = '';
+            }
+        }
+
+        // Yorumları Görüntüle
+        function displayComments(movieId) {
+            const commentsContainer = document.getElementById('comments-section');
+            commentsContainer.innerHTML = '';
+            
+            if (comments[movieId] && comments[movieId].length > 0) {
+                comments[movieId].forEach(comment => {
+                    const commentElement = document.createElement('div');
+                    commentElement.className = 'comment mb-3 p-3 bg-dark rounded';
+                    commentElement.innerHTML = `
+                        <p class="mb-1"><strong>${comment.user}:</strong> ${comment.text}</p>
+                        <small class="text-muted">${comment.date}</small>
+                    `;
+                    commentsContainer.appendChild(commentElement);
+                });
+            } else {
+                commentsContainer.innerHTML = '<p class="text-muted">Henüz yorum yapılmamış.</p>';
+            }
+        }
+
+        // Film Detaylarını Göster
+        async function showMovieDetails(movieId) {
+            try {
+                const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=tr-TR`);
+                const movie = await response.json();
+
+                document.getElementById('movie-poster').src = `${IMAGE_BASE_URL}${movie.poster_path}`;
+                document.getElementById('movie-title').textContent = movie.title;
+                document.getElementById('movie-overview').textContent = movie.overview;
+                document.getElementById('movie-rating').textContent = movie.vote_average.toFixed(1);
+
+                // Beğeni durumunu kontrol et
+                const likeBtn = document.getElementById('like-button');
+                if (likedMovies[movieId]) {
+                    likeBtn.classList.remove('text-white');
+                    likeBtn.classList.add('text-danger');
+                } else {
+                    likeBtn.classList.remove('text-danger');
+                    likeBtn.classList.add('text-white');
+                }
+
+                // Yorumları göster
+                displayComments(movieId);
+
+                const modal = new bootstrap.Modal(document.getElementById('movieModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Film detayları yüklenirken hata oluştu:', error);
+            }
+        }
+
+        // Dizi Detaylarını Göster
+        async function showTVDetails(tvId) {
+            try {
+                const response = await fetch(`${BASE_URL}/tv/${tvId}?api_key=${API_KEY}&language=tr-TR`);
+                const show = await response.json();
+
+                document.getElementById('tv-poster').src = `${IMAGE_BASE_URL}${show.poster_path}`;
+                document.getElementById('tv-title').textContent = show.name;
+                document.getElementById('tv-overview').textContent = show.overview;
+                document.getElementById('tv-rating').textContent = show.vote_average.toFixed(1);
+
+                const modal = new bootstrap.Modal(document.getElementById('tvModal'));
+                modal.show();
+            } catch (error) {
+                console.error('Dizi detayları yüklenirken hata oluştu:', error);
+            }
+        }
+
+        // Ayarlar Modalını Aç
+        function openSettings() {
+            if (!currentUser) return;
+            
+            // Mevcut bilgileri forma doldur
+            document.getElementById('settingsName').value = currentUser.name;
+            document.getElementById('settingsEmail').value = currentUser.email;
+            
+            const settingsModal = new bootstrap.Modal(document.getElementById('settingsModal'));
+            settingsModal.show();
+        }
+
+        // Ayarlar Formu Kontrolü
+        $('#settingsForm').submit(function(event) {
+            event.preventDefault();
+            
+            const newName = $('#settingsName').val();
+            const newEmail = $('#settingsEmail').val();
+            const currentPassword = $('#currentPassword').val();
+            const newPassword = $('#newPassword').val();
+            const confirmPassword = $('#confirmPassword').val();
+
+            // Şifre değişikliği yapılmak isteniyorsa
+            if (currentPassword || newPassword || confirmPassword) {
+                // Tüm şifre alanları doldurulmalı
+                if (!currentPassword || !newPassword || !confirmPassword) {
+                    alert('Şifre değişikliği için tüm alanları doldurun!');
+                    return;
+                }
+
+                // Yeni şifreler eşleşmeli
+                if (newPassword !== confirmPassword) {
+                    alert('Yeni şifreler eşleşmiyor!');
+                    return;
+                }
+
+                // Yeni şifre en az 6 karakter olmalı
+                if (newPassword.length < 6) {
+                    alert('Yeni şifre en az 6 karakter olmalıdır!');
+                    return;
+                }
+
+                // Mevcut şifre kontrolü (gerçek uygulamada sunucu tarafında yapılmalı)
+                if (currentPassword !== currentUser.password) {
+                    alert('Mevcut şifre yanlış!');
+                    return;
+                }
+
+                // Şifre güncelleme
+                currentUser.password = newPassword;
+            }
+
+            // Kullanıcı bilgilerini güncelle
+            currentUser.name = newName;
+            currentUser.email = newEmail;
+
+            // LocalStorage'ı güncelle
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            // Arayüzü güncelle
+            showAuthButtons();
+            
+            // Modalı kapat
+            $('#settingsModal').modal('hide');
+            
+            // Formu temizle
+            $('#settingsForm')[0].reset();
+            
+            alert('Bilgileriniz başarıyla güncellendi!');
+        });
+
+        // Giriş ve Kayıt butonlarını kontrol et fonksiyonunu güncelle
+        function showAuthButtons() {
+            if (currentUser) {
+                $('#authButtons').html(`
+                    <div class="dropdown">
+                        <button class="btn btn-link text-white text-decoration-none dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="avatar me-2" style="width: 35px; height: 35px; background-color: #bc7ede; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                ${currentUser.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span>${currentUser.name}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end bg-dark">
+                            <li><a class="dropdown-item text-white" href="#" onclick="openProfile()"><i class="fas fa-user me-2"></i>Profilim</a></li>
+                            <li><a class="dropdown-item text-white" href="#" onclick="openSettings()"><i class="fas fa-cog me-2"></i>Ayarlar</a></li>
+                            <li><hr class="dropdown-divider bg-secondary"></li>
+                            <li><a class="dropdown-item text-white" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Çıkış Yap</a></li>
+                        </ul>
+                    </div>
+                `);
+            } else {
+                $('#authButtons').html(`
+                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#loginModal">Giriş Yap</button>
+                    <button class="btn btn-warning ms-2" data-bs-toggle="modal" data-bs-target="#registerModal">Kayıt Ol</button>
+                `);
+            }
+        }
+
+        // Çıkış Yap
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            showAuthButtons();
+        }
+
+        // Sayfa yüklendiğinde içerikleri getir
+        document.addEventListener('DOMContentLoaded', () => {
+            getTrendingMovies();
+            getTrendingTVShows();
+            getUpcomingMovies();
+            showAuthButtons();
+        });
+
+        // Giriş Formu Kontrolü
+        $('#loginForm').submit(function(event) {
+            event.preventDefault();
+
+            var email = $('#loginEmail').val();
+            var password = $('#loginPassword').val();
+
+            // Şifre kontrolü (en az 6 karakter)
+            if (password.length < 6) {
+                alert('Şifre en az 6 karakter olmalıdır!');
+                return;
+            }
+
+            // Kullanıcı giriş işlemini burada yapabilirsiniz.
+            currentUser = {
+                email: email,
+                name: email.split('@')[0], // Geçici olarak email'in @ öncesini kullanıcı adı olarak kullanıyoruz
+                password: password // Şifreyi de saklıyoruz (gerçek uygulamada yapılmamalı)
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            console.log('Giriş başarıyla yapıldı: ', email, password);
+            $('#loginModal').modal('hide');
+            showAuthButtons();
+        });
+
+        // Kayıt Formu Kontrolü
+        $('#registerForm').submit(function(event) {
+            event.preventDefault();
+            
+            var name = $('#registerName').val();
+            var email = $('#registerEmail').val();
+            var password = $('#registerPassword').val();
+
+            // Şifre kontrolü (en az 6 karakter)
+            if (password.length < 6) {
+                alert('Şifre en az 6 karakter olmalıdır!');
+                return;
+            }
+
+            // Kullanıcı kayıt işlemini burada yapabilirsiniz.
+            currentUser = {
+                email: email,
+                name: name,
+                password: password
+            };
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            
+            console.log('Kayıt başarıyla yapıldı: ', name, email, password);
+            $('#registerModal').modal('hide');
+            showAuthButtons();
+        });
+
+        // Profilim Modalını Aç
+        function openProfile() {
+            if (!currentUser) return;
+            const profileModal = new bootstrap.Modal(document.getElementById('profileModal'));
+            profileModal.show();
+            // Avatar ve kullanıcı bilgilerini doldur
+            document.getElementById('profile-avatar').textContent = currentUser.name.charAt(0).toUpperCase();
+            document.getElementById('profile-username').textContent = currentUser.name;
+            document.getElementById('profile-email').textContent = currentUser.email;
+            // Beğenilen içerikleri yükle
+            loadLikedContent();
+            // Yorumları yükle
+            loadUserComments();
+        }
+
+        // Beğenilen İçerikleri Yükle
+        async function loadLikedContent() {
+            const likedContentContainer = document.getElementById('likedContent');
+            likedContentContainer.innerHTML = '<div class="col-12"><p class="text-center">Yükleniyor...</p></div>';
+
+            try {
+                const likedMovies = JSON.parse(localStorage.getItem('likedMovies')) || {};
+                const movieIds = Object.keys(likedMovies).filter(id => likedMovies[id]);
+
+                if (movieIds.length === 0) {
+                    likedContentContainer.innerHTML = '<div class="col-12"><p class="text-center">Henüz beğendiğiniz içerik bulunmuyor.</p></div>';
+                    return;
+                }
+
+                let contentHTML = '';
+                for (const movieId of movieIds) {
+                    const response = await fetch(`${BASE_URL}/movie/${movieId}?api_key=${API_KEY}&language=tr-TR`);
+                    const movie = await response.json();
+                    
+                    contentHTML += `
+                        <div class="col-md-4 mb-3">
+                            <div class="card bg-dark text-white">
+                                <img src="${IMAGE_BASE_URL}${movie.poster_path}" class="card-img-top" alt="${movie.title}">
+                                <div class="card-body">
+                                    <h5 class="card-title">${movie.title}</h5>
+                                    <p class="card-text">⭐ ${movie.vote_average.toFixed(1)}</p>
+                                    <button class="btn btn-sm" style="background-color: #bc7ede; color: white;" onclick="showMovieDetails(${movie.id})">
+                                        Detayları Gör
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                likedContentContainer.innerHTML = contentHTML;
+            } catch (error) {
+                console.error('Beğenilen içerikler yüklenirken hata oluştu:', error);
+                likedContentContainer.innerHTML = '<div class="col-12"><p class="text-center text-danger">İçerikler yüklenirken bir hata oluştu.</p></div>';
+            }
+        }
+
+        // Kullanıcı Yorumlarını Yükle
+        function loadUserComments() {
+            const userCommentsContainer = document.getElementById('userComments');
+            const comments = JSON.parse(localStorage.getItem('movieComments')) || {};
+            
+            let userCommentsHTML = '';
+            let hasComments = false;
+
+            for (const movieId in comments) {
+                const movieComments = comments[movieId].filter(comment => comment.user === currentUser.name);
+                
+                if (movieComments.length > 0) {
+                    hasComments = true;
+                    userCommentsHTML += `
+                        <div class="card bg-dark text-white mb-3">
+                            <div class="card-header" style="background-color: #bc7ede;">
+                                Film ID: ${movieId}
+                            </div>
+                            <div class="card-body">
+                                ${movieComments.map(comment => `
+                                    <div class="comment mb-3">
+                                        <p class="mb-1">${comment.text}</p>
+                                        <small class="text-muted">${comment.date}</small>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+
+            if (!hasComments) {
+                userCommentsHTML = '<p class="text-center">Henüz yorum yapmadınız.</p>';
+            }
+
+            userCommentsContainer.innerHTML = userCommentsHTML;
+        }
+    </script>
+</body>
+</html>
+

@@ -7,23 +7,21 @@
     <title>Vizyona Girecek Diziler - MOVISION+</title>
     <link rel="stylesheet" href="blogsitesi.css">
     <link rel="stylesheet" href="styles.css">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-   
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg bg-dark text-white fixed-top">
         <div class="container-fluid">
-            <a class="navbar-brand" href="blogsitesi.html">TVISION<span style="color: #bc7ede; font-weight: bold; font-size: 1.2em;">+</span></a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="blogsitesi.html">MOVİSİON<span style="color: #bc7ede; font-weight: bold; font-size: 1.2em;">+</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <button class="btn btn-primary dropdown-toggle mx-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-primary dropdown-toggle mx-2" type="button" data-bs-toggle="dropdown" style="background-color: #bc7ede;">
                             Filmler
                         </button>
                         <ul class="dropdown-menu">
@@ -33,17 +31,13 @@
                     </li>
 
                     <li class="nav-item dropdown">
-                        <button class="btn btn-primary dropdown-toggle mx-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-primary dropdown-toggle mx-2" type="button" data-bs-toggle="dropdown" style="background-color: #bc7ede;">
                             Diziler
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="yeni-diziler.html">Vizyona Girecekler</a></li>
                             <li><a class="dropdown-item" href="populer-diziler.html">En Çok Oy Alan</a></li>
                         </ul>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="turler.html" class="btn btn-success ms-2">Türler</a>
                     </li>
                 </ul>
             </div>
@@ -53,8 +47,8 @@
     <!-- Ana İçerik -->
     <div class="container mt-5 pt-5">
         <h1 class="text-white mb-4">Vizyona Girecek Diziler</h1>
-        
-        <!-- Filtreleme Bölümü -->
+
+        <!-- Filtreleme -->
         <div class="row mb-4">
             <div class="col-md-6">
                 <label for="genre-select" class="form-label text-white">Tür Seçin:</label>
@@ -81,46 +75,33 @@
 
         <!-- Dizi Listesi -->
         <div class="row" id="tv-show-list">
-            <!-- Diziler JavaScript ile buraya eklenecek -->
+            <!-- JavaScript ile diziler buraya eklenecek -->
         </div>
     </div>
 
     <!-- Modal -->
     <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content bg-dark text-white">
-                <div class="modal-header border-secondary">
-                    <h5 class="modal-title" id="detailsModalLabel">Detaylar</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Dizi Detayları</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Kapat"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-4">
-                            <img id="details-poster" src="" alt="Afiş" class="img-fluid rounded">
+                            <img id="details-poster" src="" alt="Dizi Poster" class="img-fluid mb-3">
                         </div>
                         <div class="col-md-8">
-                            <h3 id="details-title"></h3>
+                            <h4 id="details-title"></h4>
                             <p id="details-overview"></p>
-                            <p><strong>Puan:</strong> <span id="details-rating"></span></p>
-                            
-                            <div class="like-section mb-3">
-                                <button class="btn btn-outline-warning" id="details-like-button">
-                                    <i class="far fa-heart"></i> Beğen
-                                </button>
-                            </div>                            
-                            <div class="mt-4">
-                                <h4>Yorumlar</h4>
-                                <div id="details-comments-section" class="mb-3">
-                                    <!-- Yorumlar buraya eklenecek -->
-                                </div>
-                                <div class="form-group">
-                                    <input type="text" class="form-control bg-dark text-white mb-2" id="details-nickname-input" placeholder="Nickname">
-                                    <textarea class="form-control bg-dark text-white mb-2" id="details-comment-input" rows="3" placeholder="Yorumunuzu yazın..."></textarea>
-                                    <button class="btn btn-outline-warning" onclick="addDetailsComment()">
-                                        Yorum Ekle
-                                    </button>
-                                </div>
-                            </div>
+                            <p><strong>Derecelendirme: </strong><span id="details-rating"></span></p>
+                            <h5>Yorumlar</h5>
+                            <div id="details-comments-section"></div>
+                            <h6>Yorum Ekle</h6>
+                            <input type="text" id="details-nickname-input" placeholder="Takma adınızı girin" class="form-control mb-2">
+                            <textarea id="details-comment-input" placeholder="Yorumunuzu yazın" class="form-control mb-2"></textarea>
+                            <button id="add-comment-btn" class="btn btn-primary" onclick="addDetailsComment()">Yorum Ekle</button>
                         </div>
                     </div>
                 </div>
@@ -131,4 +112,4 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="new-tv.js"></script>
 </body>
-</html> 
+</html>

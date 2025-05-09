@@ -74,7 +74,7 @@ function displayMovies(movies) {
     movies.forEach(movie => {
         const movieCard = `
             <div class="col-md-3 mb-4">
-                <div class="card text-white bg-dark">
+                <div class="card text-white bg-dark" style="cursor: pointer;" onclick="showMovieDetails(${movie.id})" data-bs-toggle="modal" data-bs-target="#detailsModal">
                     <img src="${IMG_BASE_URL}${movie.poster_path}" 
                          class="card-img-top" 
                          alt="${movie.title}"
@@ -82,13 +82,7 @@ function displayMovies(movies) {
                     <div class="card-body">
                         <h5 class="card-title">${movie.title}</h5>
                         <p class="card-text small">${movie.release_date ? new Date(movie.release_date).toLocaleDateString('tr-TR') : 'Tarih belirtilmemiş'}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-details" 
-                                    onclick="showMovieDetails(${movie.id})"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#detailsModal">
-                                Detaylar
-                            </button>
+                        <div class="d-flex justify-content-end align-items-center">
                             <span class="badge bg-warning text-dark">
                                 ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}/10
                             </span>
@@ -122,7 +116,7 @@ function displayTVShows(shows) {
 
         const tvCard = `
             <div class="col-md-3 mb-4">
-                <div class="card text-white bg-dark">
+                <div class="card text-white bg-dark" style="cursor: pointer;" onclick="showTVDetails(${show.id})" data-bs-toggle="modal" data-bs-target="#detailsModal">
                     <img src="${IMG_BASE_URL}${show.poster_path}" 
                          class="card-img-top" 
                          alt="${show.name}"
@@ -130,13 +124,11 @@ function displayTVShows(shows) {
                     <div class="card-body">
                         <h5 class="card-title">${show.name}</h5>
                         <p class="card-text small">${show.first_air_date ? new Date(show.first_air_date).toLocaleDateString('tr-TR') : 'Tarih belirtilmemiş'}</p>
-                        <button class="btn w-100" 
-                                style="background-color: #0d6efd; color: #f4e243; font-weight: bold;"
-                                onmouseover="this.style.backgroundColor='#0b5ed7'" 
-                                onmouseout="this.style.backgroundColor='#0d6efd'"
-                                onclick="showTVDetails(${show.id})">
-                            Detayları Gör
-                        </button>
+                        <div class="d-flex justify-content-end align-items-center">
+                            <span class="badge bg-warning text-dark">
+                                ${show.vote_average ? show.vote_average.toFixed(1) : 'N/A'}/10
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -145,12 +137,13 @@ function displayTVShows(shows) {
     });
 }
 
-// Dizi detaylarını gösteren fonksiyon
+// Film detaylarını gösteren fonksiyon
 async function showMovieDetails(id) {
     try {
         const response = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=tr-TR`);
         const movie = await response.json();
         
+        // Modal başlığını ve içeriğini güncelle
         document.getElementById('detailsModalLabel').textContent = movie.title;
         document.getElementById('details-title').textContent = movie.title;
         document.getElementById('details-overview').textContent = movie.overview;
@@ -192,8 +185,70 @@ async function showMovieDetails(id) {
             document.getElementById('details-comment-input').value = '';
             displayComments('details-comments-section', getComments('movie', id));
         };
+
+        // Modal kapatıldığında yeni filmler sayfasına dön
+        const detailsModal = document.getElementById('detailsModal');
+        detailsModal.addEventListener('hidden.bs.modal', function () {
+            window.location.href = 'yeni-filmler.html';
+        });
+
+        // Modalı göster
+        const modal = new bootstrap.Modal(detailsModal);
+        modal.show();
     } catch (error) {
         console.error('Film detayları yüklenirken hata:', error);
+    }
+}
+
+// Dizi detaylarını gösteren fonksiyon
+async function showTVDetails(id) {
+    try {
+        const response = await fetch(`${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=tr-TR`);
+        const show = await response.json();
+        
+        document.getElementById('detailsModalLabel').textContent = show.name;
+        document.getElementById('details-title').textContent = show.name;
+        document.getElementById('details-overview').textContent = show.overview;
+        document.getElementById('details-rating').textContent = `${show.vote_average.toFixed(1)}/10`;
+        document.getElementById('details-poster').src = `${IMG_BASE_URL}${show.poster_path}`;
+        
+        // Beğeni butonunu ayarla
+        const likeButton = document.getElementById('details-like-button');
+        likeButton.style.backgroundColor = '#474c52';
+        likeButton.style.color = '#f4e243';
+        likeButton.style.borderColor = '#f4e243';
+        
+        // Hover efektleri
+        likeButton.onmouseover = function() {
+            this.style.backgroundColor = '#3a3e43';
+        }
+        likeButton.onmouseout = function() {
+            this.style.backgroundColor = '#474c52';
+        }
+        
+        likeButton.onclick = () => handleLike('tv', id);
+        
+        // Yorumları göster
+        const comments = getComments('tv', id);
+        displayComments('details-comments-section', comments);
+        
+        // Yorum gönderme olayını ekle
+        document.getElementById('add-comment').onclick = () => {
+            const nickname = document.getElementById('details-nickname-input').value.trim();
+            const comment = document.getElementById('details-comment-input').value.trim();
+            
+            if (!nickname || !comment) {
+                alert('Lütfen hem nickname hem de yorum alanını doldurun.');
+                return;
+            }
+            
+            addComment('tv', id, nickname, comment);
+            document.getElementById('details-nickname-input').value = '';
+            document.getElementById('details-comment-input').value = '';
+            displayComments('details-comments-section', getComments('tv', id));
+        };
+    } catch (error) {
+        console.error('Dizi detayları yüklenirken hata:', error);
     }
 }
 

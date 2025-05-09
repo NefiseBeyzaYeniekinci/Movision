@@ -27,28 +27,33 @@ function displayTVShows(shows) {
     shows.forEach(show => {
         if (!show.poster_path) return; // Posteri olmayan dizileri atla
         
-        const tvCard = `
-            <div class="col-md-3 mb-4">
-                <div class="card text-white bg-dark h-100">
-                    <img src="${IMG_BASE_URL}${show.poster_path}" class="card-img-top" alt="${show.name}"
-                         onerror="this.src='placeholder.jpg'">
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title">${show.name}</h5>
-                        <p class="card-text flex-grow-1">${show.overview ? show.overview.slice(0, 100) + '...' : 'Açıklama bulunmuyor.'}</p>
-                        <button class="btn w-100 mt-auto" 
-                                style="background-color: #474c52; color: #f4e243; border-color: #f4e243;"
-                                onmouseover="this.style.backgroundColor='#3a3e43'" 
-                                onmouseout="this.style.backgroundColor='#474c52'"
-                                onclick="showTVDetails(${show.id})"
-                                data-bs-toggle="modal" 
-                                data-bs-target="#detailsModal">
-                            Detayları Gör
-                        </button>
-                    </div>
+        const tvCard = document.createElement('div');
+        tvCard.className = 'col-md-3 mb-4';
+        tvCard.innerHTML = `
+            <div class="card text-white bg-dark h-100 tv-card" 
+                 data-id="${show.id}" 
+                 style="cursor: pointer;">
+                <img src="${IMG_BASE_URL}${show.poster_path}" class="card-img-top" alt="${show.name}"
+                     onerror="this.src='placeholder.jpg'">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">${show.name}</h5>
+                    <p class="card-text flex-grow-1">${show.overview ? show.overview.slice(0, 100) + '...' : 'Açıklama bulunmuyor.'}</p>
                 </div>
             </div>
         `;
-        tvShowList.innerHTML += tvCard;
+        tvShowList.appendChild(tvCard);
+    });
+
+    // Kartlara tıklanınca detay göster
+    document.querySelectorAll('.tv-card').forEach(card => {
+        card.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            showTVDetails(id);
+
+            // Modal'ı aç
+            const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+            modal.show();
+        });
     });
 }
 
@@ -81,21 +86,6 @@ async function showTVDetails(id) {
     }
 }
 
-
-// Tür filtreleme
-function filterShows() {
-    const genreId = document.getElementById('genre-select').value;
-    if (genreId === '') {
-        fetchNewTVShows();
-        return;
-    }
-
-    fetch(`${BASE_URL}/discover/tv?api_key=${API_KEY}&language=tr-TR&with_genres=${genreId}&sort_by=first_air_date.desc`)
-        .then(response => response.json())
-        .then(data => displayTVShows(data.results))
-        .catch(error => console.error('Hata:', error));
-}
-
 // Beğeni ve yorum fonksiyonları
 function getLikeStatus(type, id) {
     const likes = JSON.parse(localStorage.getItem('likes') || '{}');
@@ -113,7 +103,6 @@ function updateLikeButton(button, isLiked) {
     }
 }
 
-
 function getComments(type, id) {
     const comments = JSON.parse(localStorage.getItem('comments') || '{}');
     return comments[`${type}_${id}`] || [];
@@ -127,7 +116,6 @@ function displayComments(elementId, comments) {
         </div>
     `).join('');
 }
-
 
 // Yorum ekleme
 function addDetailsComment() {
@@ -154,14 +142,14 @@ function addDetailsComment() {
     // Input alanlarını temizle
     document.getElementById('details-nickname-input').value = '';
     document.getElementById('details-comment-input').value = '';
-    
 }
 
 // Sayfa yüklendiğinde dizileri getir
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Sayfa yüklendi, veriler getiriliyor...'); // Debug için log
     fetchNewTVShows();
-}); 
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Sayfa yüklendi, veriler getiriliyor...');
     fetchNewTVShows();

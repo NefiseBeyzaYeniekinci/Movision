@@ -34,11 +34,11 @@ h1 {
 }
 
 .tag:hover {
-    background-color: rgb(165, 227, 106);
+    background-color: #bc7ede;
 }
 
 .tag.highlight {
-    background-color: green;
+    background-color: #bc7ede;
 }
 
 #content {

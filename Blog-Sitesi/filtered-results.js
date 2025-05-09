@@ -78,14 +78,14 @@ function displayMovies(movies) {
                     <div class="card-body">
                         <h5 class="card-title">${movie.title}</h5>
                         <p class="card-text small">${movie.release_date ? new Date(movie.release_date).getFullYear() : 'Tarih belirtilmemiş'}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-details" 
+                        <div class="d-flex flex-column gap-2">
+                            <button class="btn btn-details w-100" 
                                     onclick="showMovieDetails(${movie.id})"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#movieModal">
                                 Detaylar
                             </button>
-                            <span class="badge bg-warning text-dark">
+                            <span class="badge bg-warning text-dark text-center">
                                 ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}/10
                             </span>
                         </div>
@@ -112,14 +112,14 @@ function displayTVShows(shows) {
                     <div class="card-body">
                         <h5 class="card-title">${show.name}</h5>
                         <p class="card-text small">${show.first_air_date ? new Date(show.first_air_date).getFullYear() : 'Tarih belirtilmemiş'}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-details" 
+                        <div class="d-flex flex-column gap-2">
+                            <button class="btn btn-details w-100" 
                                     onclick="showTVDetails(${show.id})"
                                     data-bs-toggle="modal" 
                                     data-bs-target="#detailsModal">
                                 Detaylar
                             </button>
-                            <span class="badge bg-warning text-dark">
+                            <span class="badge bg-warning text-dark text-center">
                                 ${show.vote_average ? show.vote_average.toFixed(1) : 'N/A'}/10
                             </span>
                         </div>

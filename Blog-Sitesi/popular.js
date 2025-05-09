@@ -36,20 +36,14 @@ function displayMovies(movies) {
     movies.forEach(movie => {
         const movieCard = `
             <div class="col-md-3 mb-4">
-                <div class="card text-white bg-dark">
+                <div class="card text-white bg-dark" style="cursor: pointer;" onclick="showMovieDetails(${movie.id})" data-bs-toggle="modal" data-bs-target="#movieModal">
                     <img src="${IMG_BASE_URL}${movie.poster_path}" 
                          class="card-img-top" 
                          alt="${movie.title}"
                          onerror="this.src='https://via.placeholder.com/500x750.png?text=Resim+Bulunamadı'">
                     <div class="card-body">
                         <h5 class="card-title">${movie.title}</h5>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-details" 
-                                    onclick="showMovieDetails(${movie.id})"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#movieModal">
-                                Detaylar
-                            </button>
+                        <div class="d-flex justify-content-end align-items-center">
                             <span class="badge bg-warning text-dark">
                                 ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}/10
                             </span>
@@ -81,14 +75,14 @@ async function showMovieDetails(id) {
         const isLiked = localStorage.getItem(`movie_${id}_liked`) === 'true';
         if (isLiked) {
             likeButton.innerHTML = '<i class="fas fa-heart"></i> Beğenildi';
-            likeButton.style.backgroundColor = '#f4e243'; // Sarı arka plan
+            likeButton.style.backgroundColor = '#bc7ede'; // Sarı arka plan
             likeButton.style.color = '#000'; // Siyah kalp ve yazı
-            likeButton.style.borderColor = '#f4e243'; // Sarı kenarlık
+            likeButton.style.borderColor = '#bc7ede'; // Sarı kenarlık
         } else {
             likeButton.innerHTML = '<i class="fas fa-heart"></i> Beğen';
             likeButton.style.backgroundColor = '#212529'; // Bootstrap dark rengi
-            likeButton.style.color = '#f4e243'; // Sarı kalp ve yazı
-            likeButton.style.borderColor = '#f4e243'; // Sarı kenarlık
+            likeButton.style.color = '#bc7ede'; // Sarı kalp ve yazı
+            likeButton.style.borderColor = '#bc7ede'; // Sarı kenarlık
         }
         
         // Beğeni butonuna tıklama olayı ekle
@@ -99,14 +93,14 @@ async function showMovieDetails(id) {
             
             if (newStatus) {
                 this.innerHTML = '<i class="fas fa-heart"></i> Beğenildi';
-                this.style.backgroundColor = '#f4e243'; // Sarı arka plan
+                this.style.backgroundColor = '#bc7ede'; // Sarı arka plan
                 this.style.color = '#000'; // Siyah kalp ve yazı
-                this.style.borderColor = '#f4e243'; // Sarı kenarlık
+                this.style.borderColor = '#bc7ede'; // Sarı kenarlık
             } else {
                 this.innerHTML = '<i class="fas fa-heart"></i> Beğen';
                 this.style.backgroundColor = '#212529'; // Bootstrap dark rengi
-                this.style.color = '#f4e243'; // Sarı kalp ve yazı
-                this.style.borderColor = '#f4e243'; // Sarı kenarlık
+                this.style.color = '#bc7ede'; // Sarı kalp ve yazı
+                this.style.borderColor = '#bc7ede'; // Sarı kenarlık
             }
         };
         
@@ -253,20 +247,14 @@ function displayTVShows(shows) {
     shows.forEach(show => {
         const tvCard = `
             <div class="col-md-3 mb-4">
-                <div class="card text-white bg-dark">
+                <div class="card text-white bg-dark" style="cursor: pointer;" onclick="showTVDetails(${show.id})" data-bs-toggle="modal" data-bs-target="#detailsModal">
                     <img src="${IMG_BASE_URL}${show.poster_path}" 
                          class="card-img-top" 
                          alt="${show.name}"
                          onerror="this.src='https://via.placeholder.com/500x750.png?text=Resim+Bulunamadı'">
                     <div class="card-body">
                         <h5 class="card-title">${show.name}</h5>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <button class="btn btn-details" 
-                                    onclick="showTVDetails(${show.id})"
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#detailsModal">
-                                Detaylar
-                            </button>
+                        <div class="d-flex justify-content-end align-items-center">
                             <span class="badge bg-warning text-dark">
                                 ${show.vote_average ? show.vote_average.toFixed(1) : 'N/A'}/10
                             </span>
@@ -319,14 +307,14 @@ async function showTVDetails(id) {
         const isLiked = localStorage.getItem(`tv_${id}_liked`) === 'true';
         if (isLiked) {
             likeButton.innerHTML = '<i class="fas fa-heart"></i> Beğenildi';
-            likeButton.style.backgroundColor = '#f4e243'; // Sarı arka plan
+            likeButton.style.backgroundColor = '#bc7ede'; // Sarı arka plan
             likeButton.style.color = '#000'; // Siyah kalp ve yazı
-            likeButton.style.borderColor = '#f4e243'; // Sarı kenarlık
+            likeButton.style.borderColor = '#bc7ede'; // Sarı kenarlık
         } else {
             likeButton.innerHTML = '<i class="fas fa-heart"></i> Beğen';
             likeButton.style.backgroundColor = '#212529'; // Bootstrap dark rengi
-            likeButton.style.color = '#f4e243'; // Sarı kalp ve yazı
-            likeButton.style.borderColor = '#f4e243'; // Sarı kenarlık
+            likeButton.style.color = '#bc7ede'; // Sarı kalp ve yazı
+            likeButton.style.borderColor = '#bc7ede'; // Sarı kenarlık
         }
         
         // Beğeni butonuna tıklama olayı ekle
@@ -337,14 +325,14 @@ async function showTVDetails(id) {
             
             if (newStatus) {
                 this.innerHTML = '<i class="fas fa-heart"></i> Beğenildi';
-                this.style.backgroundColor = '#f4e243'; // Sarı arka plan
+                this.style.backgroundColor = '#bc7ede'; // Sarı arka plan
                 this.style.color = '#000'; // Siyah kalp ve yazı
-                this.style.borderColor = '#f4e243'; // Sarı kenarlık
+                this.style.borderColor = '#bc7ede'; // Sarı kenarlık
             } else {
                 this.innerHTML = '<i class="fas fa-heart"></i> Beğen';
                 this.style.backgroundColor = '#212529'; // Bootstrap dark rengi
-                this.style.color = '#f4e243'; // Sarı kalp ve yazı
-                this.style.borderColor = '#f4e243'; // Sarı kenarlık
+                this.style.color = '#bc7ede'; // Sarı kalp ve yazı
+                this.style.borderColor = '#bc7ede'; // Sarı kenarlık
             }
         };
         
@@ -383,7 +371,7 @@ function handleLike(type, id) {
     // Beğeni sayısını güncelle
     const likes = getLikeCount(type, id);
     likeCount.textContent = `${likes} beğeni`;
-    likeCount.style.color = '#f4e243'; // Sarı renk
+    likeCount.style.color = '#bc7ede'; // Sarı renk
 }
 
 // Yıl seçeneklerini oluştur
